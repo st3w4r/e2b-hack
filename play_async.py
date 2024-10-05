@@ -19,8 +19,14 @@ async def run(playwright: Playwright) -> None:
     # page = context.pages[0]
 
 
-    await page.goto("https://e2b.dev/")
+    res = await page.goto("https://e2b.dev/")
     await page.get_by_role("link", name="Sign In").click()
+    
+
+    print("url:", page.url)
+    print("status:", res.status)
+    assert res.status == 200
+    
 
     
 
