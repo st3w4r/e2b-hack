@@ -8,3 +8,4 @@ RUN apt update \
 
 RUN pip install playwright
 
+RUN playwright install
