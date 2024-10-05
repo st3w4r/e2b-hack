@@ -19,6 +19,16 @@ def exec_code(code: str):
 
     execution = sandbox.notebook.exec_cell(code=code)
     print(execution)
+    list_screenshots(sandbox=sandbox)
+
+
+def list_screenshots(sandbox):
+    content = sandbox._filesystem.list(".")
+    for item in content:
+        if ".png" in item.name:
+            file_url = sandbox.download_url(item.path)
+            print(file_url)
+
 
 if __name__ == "__main__":
     from dotenv import load_dotenv
@@ -28,11 +38,10 @@ if __name__ == "__main__":
     llm_code = """
     res = await page.goto("https://e2b.dev/")
     await page.get_by_role("link", name="Sign In").click()
-    print("url:", page.url)
-    print("status:", res.status)
     assert res.status == 200
-
-"""
+    await page.get_by_role("link", name="Sign up").click()
+    await page.screenshot(path="signup.png")
+    """
 
     code = f"""
 
