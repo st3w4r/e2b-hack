@@ -23,24 +23,10 @@ def exec_code(code: str):
 if __name__ == "__main__":
     from dotenv import load_dotenv
     load_dotenv()
-
-
-    llm_code = """
-    res = await page.goto("https://e2b.dev/")
-    await page.get_by_role("link", name="Sign In").click()
-    print("url:", page.url)
-    print("status:", res.status)
-    assert res.status == 200
-
-"""
-
-    code = f"""
-
-import asyncio
+    code = """import asyncio
 import re
 import os
 from playwright.async_api import Playwright, async_playwright, expect
-
 
 async def run(playwright: Playwright) -> None:
 
@@ -48,17 +34,16 @@ async def run(playwright: Playwright) -> None:
     browser = await chromium.connect_over_cdp('wss://connect.browserbase.com?apiKey='+ os.environ["BROWSERBASE_API_KEY"])
     context = browser.contexts[0]
     page = context.pages[0]
-
     # ---------------------
-    
-    # INSERT TEST CODE HERE    
-    {llm_code}
-    
+    #
+    # WRITE YOUR TEST HERE 
+    #
     # ---------------------
+    await page.goto('https://www.google.com')
+    response = await page.context.new_page().goto('https://www.google.com')
+    assert response.status == 200
     await context.close()
     await browser.close()
-
-
 
 async def main() -> None:
     async with async_playwright() as playwright:
@@ -67,5 +52,4 @@ async def main() -> None:
 await main()
 """
     exec_code(code)
-
 

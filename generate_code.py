@@ -3,7 +3,8 @@ import os
 from pydantic import BaseModel
 import json
 
-def generate_code():
+
+def generate_code(website: str = "google.com", user_input: str = None):
     client = openai.OpenAI(
         base_url="https://api.fireworks.ai/inference/v1",
         api_key=os.getenv("FIREWORKS_API_KEY"),
@@ -12,11 +13,62 @@ def generate_code():
     class Result(BaseModel):
         python_code: str
 
-    user_prompt = """Generate some simple python code that tests print(). 
-Output JSON with schema { python_code: string \\\\ Python code without backticks  }."""
+    if not user_input:
+        user_input = "The page succesfully loads with status 200."
+
+    user_prompt = """## Instructions
+Generate some simple Playwright test for the website: {website}. 
+Output JSON with schema: 
+{{ python_code: string \\\\ unescaped Python code without backticks }}.
+
+Your test should check for this behavior: 
+{user_input}
+
+
+## Examples
+
+### Example 1
+behavior: "The page succesfully loads."
+python_code:
+```
+res = await page.goto("https://www.twitter.com/")
+await page.get_by_role("link", name="Log in").click()
+assert res.status == 200
+await page.screenshot(path="twitter_example.png")
+```
+
+## Context
+
+Your code will be run in a script like this:
+```
+import asyncio
+import re
+import os
+from playwright.async_api import Playwright, async_playwright, expect
+
+async def run(playwright: Playwright) -> None:
+    chromium = playwright.chromium
+    browser = chromium.launch()
+    page = browser.new_page()
+    # ---------------------
+    #
+    # YOUR CODE WILL BE INSERTED HERE 
+    #
+    # ---------------------
+    await context.close()
+    await browser.close()
+```
+""".format(
+        website=website, user_input=user_input
+    )
+
+    print(user_prompt)
+
+    model = os.getenv("FIREWORKS_MODEL") if os.getenv("FIREWORKS_MODEL") else "accounts/fireworks/models/mixtral-8x7b-instruct"
+    print(f"Using model {model}")
 
     chat_completion = client.chat.completions.create(
-        model=os.getenv("LLM_MODEL") if os.getenv("LLM_MODEL") else "accounts/fireworks/models/mixtral-8x7b-instruct",
+        model=model,
         response_format={"type": "json_object", "schema": Result.model_json_schema()},
         messages=[
             {
@@ -26,14 +78,15 @@ Output JSON with schema { python_code: string \\\\ Python code without backticks
         ],
     )
 
-
     # print(repr(chat_completion.choices[0].message.content))
 
     result = Result(**json.loads(chat_completion.choices[0].message.content))
     print(result.python_code)
     return result.python_code
 
-if __name__ == '__main__':
-  from dotenv import load_dotenv
-  load_dotenv()
-  generate_code()
+
+if __name__ == "__main__":
+    from dotenv import load_dotenv
+
+    load_dotenv()
+    generate_code()
