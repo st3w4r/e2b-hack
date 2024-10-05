@@ -1,0 +1,4 @@
+playwright
+browserbase
+e2b
+e2b-code-interpreter==0.0.11b40

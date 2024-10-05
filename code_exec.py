@@ -1,4 +1,5 @@
 import os
+import sys
 from e2b_code_interpreter import CodeInterpreter
 
 
@@ -10,18 +11,22 @@ assert BROWSERBASE_PROJECT_ID
 
 code = """
 import playwright
+import os
 
 print('Hello, E2B Hack!')
+print("Playwright:", playwright)
 
-print(playwright)
+
 
 """
 
-with CodeInterpreter(template="e2b-hack", 
-    env_vars={
+
+sandbox = CodeInterpreter(template="e2b-hack", timeout=20,
+    envs={
         "BROWSERBASE_API_KEY": BROWSERBASE_API_KEY,
         "BROWSERBASE_PROJECT_ID": BROWSERBASE_PROJECT_ID,
-    }) as sandbox:
-    execution = sandbox.notebook.exec_cell("print('hello')")
+    })
 
-    print(execution)
+execution = sandbox.notebook.exec_cell(code)
+print(execution)
+
