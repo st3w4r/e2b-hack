@@ -8,7 +8,14 @@ BROWSERBASE_PROJECT_ID = os.getenv("BROWSERBASE_PROJECT_ID")
 assert BROWSERBASE_API_KEY
 assert BROWSERBASE_PROJECT_ID
 
-code = "print('Hello, World!')"
+code = """
+import playwright
+
+print('Hello, E2B Hack!')
+
+print(playwright)
+
+"""
 
 with CodeInterpreter(template="e2b-hack", 
     env_vars={

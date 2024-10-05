@@ -5,5 +5,5 @@ install e2b CLI
 
 npm install -g @e2b/cli@latest
 
-e2b template build --name='e2b-hack'
+e2b template build -c "/root/.jupyter/start-up.sh" --name='e2b-hack'
 ```
