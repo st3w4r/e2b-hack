@@ -5,3 +5,5 @@ e2b-code-interpreter==0.0.11b40
 openai==1.51.0
 pydantic==2.9.2
 python-dotenv
+requests
+pillow
