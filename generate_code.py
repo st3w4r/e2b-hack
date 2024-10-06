@@ -4,7 +4,7 @@ from pydantic import BaseModel
 import json
 
 
-def generate_code(website: str = "google.com", user_input: str = None):
+def generate_code(website: str = "google.com", behavior: str = None):
     client = openai.OpenAI(
         base_url="https://api.fireworks.ai/inference/v1",
         api_key=os.getenv("FIREWORKS_API_KEY"),
@@ -13,8 +13,8 @@ def generate_code(website: str = "google.com", user_input: str = None):
     class Result(BaseModel):
         python_code: str
 
-    if not user_input:
-        user_input = "The page succesfully loads with status 200."
+    if not behavior:
+        behavior = "The page succesfully loads with status 200."
 
     user_prompt = """## Instructions
 Generate some simple Playwright test for the website: {website}. 
@@ -22,7 +22,7 @@ Output JSON with schema:
 {{ python_code: string \\\\ unescaped Python code without backticks }}.
 
 Your test should check for this behavior: 
-{user_input}
+{behavior}
 
 
 ## Examples
@@ -59,7 +59,7 @@ async def run(playwright: Playwright) -> None:
     await browser.close()
 ```
 """.format(
-        website=website, user_input=user_input
+        website=website, behavior=behavior
     )
 
     print(user_prompt)
