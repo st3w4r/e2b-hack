@@ -53,6 +53,15 @@ await page.fill('[name="email"]', "mike@example.com")
 await page.locator('[type="submit"]').first.click()
 ```
 
+### Example 4
+behavior: "Search baseball results"
+python_code:
+```
+res = await page.goto("https://www.google.com/")
+await page.fill('[title="Search"]', "baseball results")
+await page.locator('[type="submit"]').first.click()
+```
+
 
 ## Context
 
