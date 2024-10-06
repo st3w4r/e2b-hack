@@ -32,10 +32,27 @@ behavior: "The page succesfully loads."
 python_code:
 ```
 res = await page.goto("https://www.twitter.com/")
-await page.get_by_role("link", name="Log in").click()
 assert res.status == 200
-await page.screenshot(path="twitter_example.png")
 ```
+
+### Example 2
+behavior: "Click on log in link."
+python_code:
+```
+res = await page.goto("https://www.twitter.com/")
+await page.get_by_role("link", name="Log in").first.click()
+```
+
+### Example 3
+behavior: "Navigate to the newsletter page enter the email mike@example.com"
+python_code:
+```
+res = await page.goto("https://news.ycombinator.com/")
+await page.get_by_role('link', name='Newsletter').first.click()
+await page.fill('[name="email"]', "mike@example.com")
+await page.locator('[type="submit"]').first.click()
+```
+
 
 ## Context
 
