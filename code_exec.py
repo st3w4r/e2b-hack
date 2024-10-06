@@ -19,6 +19,16 @@ def exec_code(code: str):
 
     execution = sandbox.notebook.exec_cell(code=code)
     print(execution)
+    list_screenshots(sandbox=sandbox)
+
+
+def list_screenshots(sandbox):
+    content = sandbox._filesystem.list(".")
+    for item in content:
+        if ".png" in item.name:
+            file_url = sandbox.download_url(item.path)
+            print(file_url)
+
 
 if __name__ == "__main__":
     from dotenv import load_dotenv
