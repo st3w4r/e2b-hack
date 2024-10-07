@@ -15,6 +15,7 @@ def test_website(website: str, behavior: str):
     else:
         llm_code_indented = "\n".join(["    " + ln for ln in llm_code.splitlines()])
 
+
     code = f"""import asyncio
 import re
 import os
@@ -29,6 +30,7 @@ async def run(playwright: Playwright) -> None:
         
 {llm_code_indented}
 
+    await asyncio.sleep(2)  # Sleep for the page to load    
     await page.screenshot(path="screenshot.png")
 
     await context.close()
